@@ -1,0 +1,28 @@
+import requests
+from bs4 import BeautifulSoup
+
+# 设置请求头，模拟浏览器访问
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+
+# 设置用户ID
+user_id = '168839142'
+
+# 构造用户主页的URL地址
+url = 'https://music.163.com/user/home?id={}'.format(user_id)
+
+# 发送GET请求，获取用户主页的HTML内容
+response = requests.get(url, headers=headers)
+html = response.text
+print(html)
+# 使用BeautifulSoup解析HTML内容
+soup = BeautifulSoup(html, 'html.parser')
+
+# 找到所有歌单名称所在的HTML标签
+playlist_tags = soup.find_all('a', class_='msk')
+
+# 打印每个歌单的名称和URL地址
+for playlist_tag in playlist_tags:
+    playlist_name = playlist_tag['title']
+    playlist_url = 'https://music.163.com' + playlist_tag['href']
+    print('歌单名称：{}，URL地址：{}'.format(playlist_name, playlist_url))
